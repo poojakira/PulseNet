@@ -17,35 +17,51 @@
 
 ---
 
-## Overview
+## 1. 📖 Overview
 
 PulseNet is a production-grade predictive maintenance platform built for aerospace engine health monitoring. It processes NASA C-MAPSS turbofan degradation data through a multi-model ML pipeline, detecting anomalies in real time with enterprise security, blockchain audit trails, and full MLOps integration.
 
-### Key Capabilities
+---
 
-- **4 ML Models** — Isolation Forest, LSTM Autoencoder, Transformer Autoencoder, and Ensemble (majority vote / weighted score)
-- **Real-Time Streaming** — Async producer/consumer pipeline with backpressure control
-- **Enterprise Security** — AES-256 Fernet encryption, JWT + RBAC (3-tier), blockchain audit trail with Merkle tree
-- **Production Monitoring** — Prometheus `/metrics` endpoint, Grafana-ready, MLflow experiment tracking, data drift detection
-- **One-Command Deploy** — Docker Compose with FastAPI, Streamlit dashboard, and streaming worker
+## 2. 👥 Team Contributions
+
+### 2.1 Pooja Kiran - Lead AI Systems Architect
+
+| # | Domain | Contribution Details | Specifications |
+|---|--------|---------------------|----------------|
+| 1 | **Multi-Model ML Architecture** | Designed 4-model ensemble: Isolation Forest (global outliers), LSTM Autoencoder (temporal), Transformer Autoencoder (long-range), and Ensemble Combiner | Majority vote + weighted score fusion |
+| 2 | **NVIDIA GPU Optimization** | Implemented Distributed Data Parallel (DDP) and Automatic Mixed Precision (AMP) for multi-GPU training | 2x speedup, 10,000+ samples/sec throughput |
+| 3 | **Enterprise Security Protocol** | Designed AES-256 Fernet encryption with auto-key rotation and 3-tier JWT RBAC (admin/engineer/operator) | SHA-256 blockchain audit with Merkle tree |
+| 4 | **FastAPI Backend Engine** | Developed high-performance RESTful API with Prometheus `/metrics` integration and async request handling | <5ms median inference latency |
+| 5 | **MLOps & Real-Time Streaming** | Built MLflow experiment tracking, automated drift detection, and async producer/consumer telemetry architecture | End-to-end instrumentation |
+| 6 | **Model Validation** | Achieved 99.8% data integrity under 30% packet loss scenarios and <0.5ms encryption overhead | Mission-critical reliability |
+
+### 2.2 Rhutvik Pachghare - Robotics Systems & DevOps Engineer
+
+| # | Domain | Contribution Details | Specifications |
+|---|--------|---------------------|----------------|
+| 1 | **Hardware Telemetry Bridge** | Designed `scripts/robotics_telemetry_bridge.py` edge controller for field robotics integration | 14 physical sensor voltages @ 1 Hz |
+| 2 | **Fault Injection Simulation** | Implemented high-pressure compressor degradation injection patterns for real engine mock-interfaces | Emergency safe-shutdown @ health < 50% |
+| 3 | **Pytest Validation Suite** | Engineered comprehensive 52-case validation suite covering models (12), API (18), security (14), and pipeline (8) | >90% code coverage |
+| 4 | **Distributed Platform (DevOps)** | Architected 4-service Docker Compose deployment (FastAPI, Streamlit, MLflow, streaming worker) | One-command `docker-compose up` |
+| 5 | **Visual Monitoring Layer** | Built Streamlit real-time monitoring dashboard with prediction comparison and system health metrics | `src/pulsenet/dashboard/app.py` |
+| 6 | **CI/CD Governance** | Designed GitHub Actions pipeline for automated lint (Ruff), test, type check (Pyright), and Docker build | Verified on every main branch push |
 
 ---
 
-## 🙋 My Contributions (Rhutvik Pachghare)
+## 3. ✨ Key Capabilities
 
-> This project is a collaboration. Here is a precise breakdown of what I personally engineered:
-
-| Domain | My Work |
-|---|---|
-| **Robotics & Hardware Integration** | Designed `scripts/robotics_telemetry_bridge.py` — a hardware edge controller that collects sensor voltages, injects degradation patterns, and triggers emergency safe-shutdown sequences when health drops below critical thresholds |
-| **Test Engineering** | Engineered the complete 52-case pytest validation suite across `test_models.py`, `test_api.py`, `test_security.py`, `test_pipeline.py` |
-| **DevOps & Containerization** | Built the Docker Compose multi-service deployment (FastAPI + Streamlit + MLflow + streaming worker) |
-| **Dashboard & Visualization** | Built the Streamlit real-time monitoring dashboard (`src/pulsenet/dashboard/app.py`) |
-| **CI/CD Pipelines** | Designed and governed the GitHub Actions pipeline (lint, test, type-check, Docker build) |
+| # | Capability | Description | Technical Implementation |
+|---|------------|-------------|--------------------------|
+| 1 | **4 ML Models** | Comprehensive anomaly detection | Isolation Forest, LSTM AE, Transformer AE, Ensemble |
+| 2 | **Real-Time Streaming** | Low-latency telemetry processing | Async producer/consumer with backpressure control |
+| 3 | **Enterprise Security** | High-assurance data protection | AES-256, JWT RBAC, Blockchain audit (Merkle tree) |
+| 4 | **Production Monitoring** | Full system observability | Prometheus/Grafana, MLflow, data drift detection |
+| 5 | **One-Command Deploy** | Simplified orchestration | Docker Compose, multi-service environment |
 
 ---
 
-## Architecture
+## 4. 🏗️ Architecture
 
 📄 **[Read the Full System Design Document](docs/design_doc.md)**
 
@@ -65,151 +81,95 @@ graph LR
     Ingestion --> Pipeline --> Output
 ```
 
-### Pipeline Flow
+### 4.1 Pipeline Flow
+
 ```
 python main_pipeline.py --mode full
-┌──────────┐  ┌──────────────┐  ┌──────────┐  ┌────────────┐  ┌───────────┐
+
+┌──────────┐   ┌──────────────┐   ┌──────────┐   ┌────────────┐   ┌───────────┐
 │  Ingest  │─▶│  Preprocess  │─▶│  Train   │─▶│  Evaluate  │─▶│ Inference │
-│ C-MAPSS  │  │   Features   │  │  Models  │  │  F1/AUC    │  │ + Logging │
-└──────────┘  └──────────────┘  └──────────┘  └────────────┘  └───────────┘
-     │               │                │               │               │
-  AES-256       Rolling Mean    IF / LSTM / TF    Comparison    Blockchain
-  Encrypt        Normalize      Ensemble Opt      Multi-Model   Audit Log
+│ C-MAPSS  │   │   Features   │   │  Models  │   │   F1/AUC   │   │ + Logging │
+└──────────┘   └──────────────┘   └──────────┘   └────────────┘   └───────────┘
+     │                │                │                │                │
+  AES-256       Rolling Mean      IF / LSTM / TF    Comparison      Blockchain
+  Encrypt         Normalize        Ensemble Opt    Multi-Model      Audit Log
 ```
 
 ---
 
-## Quick Start
+## 5. 🚀 Quick Start
 
-### Option 1: Docker (Recommended)
+### 5.1 Prerequisites
+
+| # | Requirement | Version | Purpose |
+|---|-------------|---------|----------|
+| 1 | Python | 3.11+ | Core runtime |
+| 2 | Docker | Latest | Containerized deployment |
+| 3 | NVIDIA GPU | Latest | Accelerated ML (optional) |
+
+### 5.2 Installation (Docker)
+
 ```bash
+# 1. Clone repository
 git clone https://github.com/Rhutvik-pachghare1999/PulseNet.git && cd PulseNet
-cp .env.example .env  # Configure environment variables
-# Place train_FD001.txt, test_FD001.txt, RUL_FD001.txt in project root
-docker-compose up --build
-Rhutvik-pachghare1999
 
-| Service | URL |
-|---|---|
-| **API** (Swagger UI) | http://localhost:8000/docs |
-| **Dashboard** | http://localhost:8501 |
-| **Prometheus Metrics** | http://localhost:8000/metrics |
-
-### Option 2: Local
-```bash
-pip install -r requirements.txt
+# 2. Configure environment
 cp .env.example .env
-python main_pipeline.py --mode full  # Full pipeline
-python main.py                        # API server
-streamlit run src/pulsenet/dashboard/app.py  # Dashboard
+# Place train_FD001.txt, test_FD001.txt, RUL_FD001.txt in root
+
+# 3. Launch services
+docker-compose up --build
 ```
 
----
-
-## Project Structure
-```
-PulseNet/
-├── main.py                  # FastAPI server entry
-├── main_pipeline.py         # CLI orchestrator (5 modes)
-├── config.yaml              # Central configuration
-├── Dockerfile               # NVIDIA NGC container image
-├── docker-compose.yml       # 3-service deployment
-├── .env.example             # Environment variable template
-├── src/pulsenet/
-│   ├── api/                 # FastAPI + JWT + RBAC
-│   ├── pipeline/            # Data processing pipeline
-│   ├── models/              # Multi-model ML system
-│   ├── security/            # AES-256 + Blockchain + Audit
-│   ├── streaming/           # Async producer/consumer queue
-│   ├── dashboard/app.py     # Streamlit real-time dashboard
-│   ├── benchmarks/          # Performance benchmarking suite
-│   └── mlops/tracker.py     # MLflow + drift detection
-├── tests/                   # 52+ pytest test cases
-│   ├── test_models.py
-│   ├── test_api.py
-│   ├── test_security.py
-│   └── test_pipeline.py
-├── scripts/
-│   └── robotics_telemetry_bridge.py  # Edge hardware controller
-└── .github/workflows/ci.yml          # CI: lint, test, typecheck, docker
-```
+| Service | URL | Default Port |
+|---------|-----|--------------|
+| API (Swagger) | http://localhost:8000/docs | 8000 |
+| Dashboard | http://localhost:8501 | 8501 |
+| MLflow UI | http://localhost:5000 | 5000 |
+| Prometheus | http://localhost:8000/metrics | 8000 |
 
 ---
 
-## API Documentation
+## 6. 💻 CLI Reference
 
-### Authentication
-```bash
-# Get JWT token
-curl -X POST http://localhost:8000/token \
-  -H "Content-Type: application/json" \
-  -d '{"username": "admin", "password": "admin123"}'
-# Response: {"access_token": "eyJ...", "token_type": "bearer", "role": "admin"}
-```
-
-**Roles**: `admin` (full access), `engineer` (predict + train), `operator` (predict only)
-
-### Endpoints
-| Endpoint | Method | Auth | Description |
-|---|---|---|---|
-| `/health` | GET | ❌ | System status |
-| `/token` | POST | ❌ | JWT login |
-| `/predict` | POST | ✅ | Single inference |
-| `/predict/batch` | POST | ✅ | Batch inference |
-| `/train` | POST | ✅ | Retrain model |
-| `/audit` | GET | ✅ | Blockchain logs |
-| `/verify-chain` | GET | ✅ | Chain integrity |
-| `/metrics` | GET | ❌ | Prometheus metrics |
+| # | Command | Description |
+|---|---------|-------------|
+| 1 | `python main_pipeline.py --mode full` | Run end-to-end pipeline |
+| 2 | `python main_pipeline.py --mode train` | Train ML models |
+| 3 | `python main_pipeline.py --mode predict` | Run inference |
+| 4 | `python main_pipeline.py --mode benchmark` | Execute performance suite |
+| 5 | `python main_pipeline.py --mode stream` | Start real-time streaming |
+| 6 | `python main.py` | Start FastAPI server |
 
 ---
 
-## ML Models
+## 7. 🛡️ Security & Integrity
 
-| Model | Type | Approach | Use Case |
-|---|---|---|---|
-| **Isolation Forest** | Tree ensemble | Anomaly isolation depth | Baseline, fast inference |
-| **LSTM Autoencoder** | RNN | Reconstruction error | Temporal patterns |
-| **Transformer AE** | Attention | Positional + reconstruction | Long-range dependencies |
-| **Ensemble** | Meta-model | Majority vote / weighted score | Maximum accuracy |
+### 7.1 Security Features
 
----
-
-## Benchmark Results
-
-| Metric | Result | Target |
-|---|---|---|
-| Inference Latency (median) | <5ms | <50ms ✅ |
-| Throughput (batch=64) | >10,000 samples/sec | >1,000 ✅ |
-| Data Integrity (30% loss) | 99.8% | >95% ✅ |
-| Encryption Overhead | <0.5ms | <10ms ✅ |
-| Blockchain Block Add | <1ms | <5ms ✅ |
+| # | Feature | Implementation | Specification |
+|---|---------|----------------|---------------|
+| 1 | **Encryption** | AES-256 Fernet | Auto-key rotation, env-loaded keys |
+| 2 | **Authentication** | JWT with RBAC | 3-tier: Admin / Engineer / Operator |
+| 3 | **Audit Trail** | Blockchain-backed | SHA-256 chaining + Merkle verification |
+| 4 | **Reliability** | Stateless workers | Async backpressure, 99.8% integrity |
 
 ---
 
-## Monitoring & Observability
+## 8. 📊 Benchmark Results
 
-### Prometheus Metrics
-| Metric | Type | Description |
-|---|---|---|
-| `pulsenet_requests_total` | Counter | Total HTTP requests by method, endpoint, status |
-| `pulsenet_request_latency_seconds` | Histogram | Request latency distribution |
-
-### MLflow Tracking
-```bash
-mlflow ui --backend-store-uri mlruns  # → http://localhost:5000
-```
+| # | Metric | Result | Target | Status |
+|---|--------|--------|--------|--------|
+| 1 | Inference Latency | <5ms | <50ms | ✅ |
+| 2 | Throughput | >10,000 samples/sec | >1,000 | ✅ |
+| 3 | Data Integrity | 99.8% | >95% | ✅ |
+| 4 | Encryption Overhead | <0.5ms | <10ms | ✅ |
+| 5 | Blockchain Block Time | <1ms | <5ms | ✅ |
 
 ---
 
-## Security
-- **AES-256 Fernet** encryption with automatic key rotation
-- **JWT authentication** with 3-tier RBAC (admin/engineer/operator)
-- **Blockchain audit trail** with SHA-256 hash chaining + Merkle tree verification
-- Keys loaded from environment variables (never hardcoded)
+## 9. 🧹 Testing
 
----
-
-## Testing
 ```bash
 # Run all tests with coverage
 PYTHONPATH=src pytest tests/ -v --cov=src/pulsenet --cov-report=term-missing
@@ -221,148 +181,46 @@ pytest tests/test_security.py -v
 pytest tests/test_pipeline.py -v
 ```
 
-## CI/CD
-| Job | Tool | Purpose |
-|---|---|---|
-| **Lint** | Ruff | Code style + formatting |
-| **Test** | Pytest + Coverage | 52+ test cases with coverage report |
-| **Type Check** | Pyright | Static type analysis |
-| **Docker** | Docker Build | Container build verification |
+### 9.1 CI/CD Workflow
+
+| # | Job | Tool | Purpose |
+|---|-----|------|----------|
+| 1 | **Linting** | Ruff | Code style + formatting |
+| 2 | **Testing** | Pytest | 52+ cases, coverage report |
+| 3 | **Type Check** | Pyright | Static type analysis |
+| 4 | **Docker Build** | Docker | Image build verification |
 
 ---
 
-## Deployment
-```bash
-# One command deployment
-docker-compose up --build
-# Services:
-# ├── pulsenet-api        → :8000 (FastAPI + Prometheus)
-# ├── pulsenet-dashboard  → :8501 (Streamlit)
-# ├── pulsenet-mlflow     → :5000 (MLflow Server)
-# └── pulsenet-streaming  → Background worker (GPU)
-```
+## 10. 📐 Design Decisions
+
+| # | Decision | Rationale | Benefit |
+|---|----------|-----------|----------|
+| 1 | **NASA C-MAPSS FD001** | High-fidelity turbofan data | Realistic degradation patterns |
+| 2 | **Ensemble: IF + LSTM + TF** | Multi-modal approach | Global + temporal + long-range accuracy |
+| 3 | **Blockchain Audit** | Immutable logging | Tamper-proof regulatory compliance |
+| 4 | **FastAPI + Prometheus** | Native async + observability | Production-grade throughput & tracking |
+| 5 | **NVIDIA NGC Base** | Optimized container environment | GPU acceleration out-of-the-box |
 
 ---
 
-## CLI Reference
-```bash
-python main_pipeline.py --mode full       # End-to-end pipeline
-python main_pipeline.py --mode train      # Train models
-python main_pipeline.py --mode predict    # Run inference
-python main_pipeline.py --mode benchmark  # Performance benchmarks
-python main_pipeline.py --mode stream     # Real-time streaming
-python main.py                            # Start API server
-```
+## 11. 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Ensure all tests pass (`pytest`)
+4. Submit a Pull Request with detailed description
 
 ---
 
-## Environment Variables
-See [`.env.example`](.env.example) for the full template.
+## 12. 📜 License
 
-| Variable | Description | Default |
-|---|---|---|
-| `PULSENET_JWT_SECRET` | JWT signing secret | `change-me-in-production` |
-| `PULSENET_ENCRYPTION_KEY` | AES-256 key (auto-generated if empty) | — |
-| `MLFLOW_TRACKING_URI` | MLflow backend store | `mlruns` |
-| `NVIDIA_VISIBLE_DEVICES` | GPU visibility | `all` |
+Distributed under the **Apache License 2.0**. See `LICENSE` for more information.
 
 ---
 
-## Roadmap
-- [ ] Multi-dataset support (FD002, FD003, FD004)
-- [ ] Grafana dashboard templates (pre-built `.json`)
-- [ ] WebSocket live streaming to dashboard
-- [ ] Model explainability (SHAP / attention visualization)
-- [ ] Kubernetes Helm chart deployment
-- [ ] A/B model testing with traffic splitting
+## 13. 📧 Contact & Support
 
----
-
-## References
-- **Dataset**: [NASA C-MAPSS Turbofan Engine Degradation (FD001)](https://data.nasa.gov/Aerospace/CMAPSS-Jet-Engine-Simulated-Data/ff5v-kuh6)
-- **Isolation Forest**: Liu et al., Isolation Forest, ICDM 2008
-- **AES Cryptography**: NIST FIPS 197
-- **Blockchain**: SHA-256 hash chaining (Nakamoto, 2008)
-
----
-
-## Team
-| Name | Role | Contributions |
-|---|---|---|
-| **Pooja Kiran** | Lead AI Systems Architect | Multi-model ML architecture, NVIDIA GPU optimization, AES-256 + Blockchain ## 🏗️ Contributions
-
-### Pooja Kiran — Lead AI Systems Architect & Core Developer
-**Domain:** ML Architecture · GPU Optimization · Security · Backend · MLOps
-
-**1. Multi-Model ML Architecture (4 models)**
-   - Isolation Forest — Global outlier detection
-   - LSTM Autoencoder — Temporal sequence modeling
-   - Transformer Autoencoder — Long-range dependency modeling
-   - Ensemble Combiner — Majority vote + weighted score fusion
-
-**2. NVIDIA GPU Hardware Optimization**
-   - Distributed Data Parallel (DDP) multi-GPU training
-   - Automatic Mixed Precision (AMP) for 2x speedup
-   - GPU memory optimization for 10,000+ samples/sec throughput
-
-**3. Enterprise Security Protocol**
-   - AES-256 Fernet encryption with automatic key rotation
-   - JWT authentication + 3-tier RBAC (admin/engineer/operator)
-   - SHA-256 blockchain audit trail with Merkle tree validation
-
-**4. FastAPI Backend Engine**
-   - RESTful API endpoints: `/predict`, `/train`, `/audit`, `/verify-chain`
-   - Prometheus `/metrics` integration for observability
-   - Async request handling with backpressure control
-
-**5. MLOps & Real-Time Streaming Pipeline**
-   - MLflow experiment tracking + automated drift detection
-   - Async producer/consumer architecture for telemetry
-   - End-to-end telemetry instrumentation (counters, histograms)
-
-### Rhutvik Pachghare — Robotics Systems & DevOps Engineer  
-**Domain:** Hardware Integration · Testing · Containerization · Visualization · CI/CD
-
-**1. Hardware-to-Software Telemetry Bridge** (`scripts/robotics_telemetry_bridge.py`)
-   - Edge controller for field robotics integration
-   - Collects 14 physical sensor voltages at 1 Hz from real engine mock-interfaces
-   - Injects simulated high-pressure compressor degradation over time
-   - Emergency safe-shutdown: AI scores hardware health <50% → sequenced mechanical disengagement
-
-**2. 52-Case Pytest Validation Suite**
-   - `tests/test_models.py` — 12 cases (train/predict/tune/save)
-   - `tests/test_api.py` — 18 cases (endpoints/auth/RBAC)
-   - `tests/test_security.py` — 14 cases (encryption/blockchain/audit)
-   - `tests/test_pipeline.py` — 8 cases (pipeline/streaming/config)
-
-**3. Docker Compose Distributed Platform**
-   - 4-service architecture (FastAPI, Streamlit, MLflow, streaming worker)
-   - One-command deployment: `docker-compose up --build`
-   - Environment variable management with `.env.example` template
-
-**4. Streamlit Visual Monitoring Layer** (`src/pulsenet/dashboard/app.py`)
-   - Real-time telemetry visualization dashboard
-   - Multi-model prediction comparison interface
-   - System health metrics monitoring
-
-**5. CI/CD Pipeline Governance** (`.github/workflows/ci.yml`)
-   - Automated lint (Ruff), test (Pytest), type check (Pyright), Docker build
-   - Runs on every push and pull request to `main` branch
-
----
-
-## 📊 Benchmark Results
-
-| Metric | Value | Target | Status |
-|---|---|---|---|
-| Inference Latency (median) | <5ms | <50ms | ✅ |
-| Throughput (batch=64) | >10,000 samples/sec | >1,000 | ✅ |
-| Data Integrity (30% packet loss) | 99.8% | >95% | ✅ |
-| Encryption Overhead | <0.5ms | <10ms | ✅ |
-| Blockchain Block Add Time | <1ms | <5ms | ✅ |
-
-```bash
-python main_pipeline.py --mode benchmark  # Generate full performance report
-```
-
----
+For questions, issues, or collaboration:
+- **GitHub Issues**: [PulseNet/issues](https://github.com/Rhutvik-pachghare1999/PulseNet/issues)
+- **Author**: Rhutvik Pachghare | [LinkedIn](https://www.linkedin.com/in/rhutvik-pachghare/) | [GitHub](https://github.com/Rhutvik-pachghare1999)
